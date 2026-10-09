@@ -1,0 +1,11 @@
+{
+  "name": "chaemyeong-portfolio",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "오채명 웹앱 포트폴리오 — 노션 연동, Vercel 배포용 (외부 패키지 없음)",
+  "scripts": {
+    "dev": "node dev-server.mjs"
+  },
+  "engines": { "node": ">=18" }
+}
