@@ -74,6 +74,14 @@ function pick(page, names) {
   return null;
 }
 
+// '21', '약 21명', 21 → 21 (숫자가 없으면 0)
+const toCount = (v) => (typeof v === 'number' ? v : Number(String(v ?? '').replace(/[^0-9.]/g, '')) || 0);
+
+// 핵심 숫자: 공개 프로젝트의 인원수 합계 (상태가 '예정'인 과정은 제외)
+function stats(projects) {
+  return { headcount: projects.filter((p) => p.status !== '예정').reduce((n, p) => n + (p.headcount || 0), 0) };
+}
+
 const toList = (v) =>
   Array.isArray(v) ? v : typeof v === 'string' && v.trim() ? v.split(/[,·/]/).map((s) => s.trim()).filter(Boolean) : [];
 
