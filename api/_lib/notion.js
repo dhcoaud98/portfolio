@@ -149,7 +149,8 @@ const byLatest = (a, b) => sortKey(b).localeCompare(sortKey(a));
 /* ---------- 목록 ---------- */
 export async function listProjects() {
   if (!hasToken()) {
-    return { source: 'sample', projects: SAMPLE_PROJECTS.filter((p) => p._public).map(strip).map(splitTech).sort(byLatest), errors: [] };
+    const list = SAMPLE_PROJECTS.filter((p) => p._public).map(strip).map(splitTech).sort(byLatest);
+    return { source: 'sample', projects: list, stats: stats(list), errors: [] };
   }
   const settled = await Promise.allSettled(
     PROJECT_DATABASES.map(async (db) => {
