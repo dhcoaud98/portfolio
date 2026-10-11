@@ -167,7 +167,7 @@ export async function listProjects() {
       errors.push(PROJECT_DATABASES[i].org);
     }
   });
-  return { source: 'notion', projects: projects.sort(byLatest), errors };
+  return { source: 'notion', projects: projects.sort(byLatest), stats: stats(projects), errors };
 }
 
 const strip = ({ _public, ...p }) => p;
