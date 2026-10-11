@@ -138,7 +138,7 @@
         '<dl class="box facts">' + P.facts.map(function (f) { return '<div><dt>' + esc(f[0]) + '</dt><dd>' + esc(f[1]) + '</dd></div>'; }).join('') + '</dl>' +
       '</section>' +
       '<section class="kpis" aria-label="핵심 숫자">' + P.kpis.map(function (k) {
-        return '<div class="kpi"><b>' + esc(k.n) + '<small>' + esc(k.u) + '</small></b><span>' + esc(k.t) + '</span></div>';
+            return '<div class="kpi"' + (k.auto ? ' data-auto="' + esc(k.auto) + '"' : '') + '><b><span class="kn">' + esc(k.n) + '</span><small>' + esc(k.u) + '</small></b><span>' + esc(k.t) + '</span></div>';
       }).join('') + '</section>' +
       '<section class="block"><div class="secth"><h2>주요 프로젝트</h2><a href="/projects" data-link>전체 프로젝트 →</a></div><div id="homeProjects">' + skeleton(4) + '</div></section>' +
       '<section class="two">' +
@@ -152,6 +152,10 @@
     getProjects().then(function (d) {
       var el = document.getElementById('homeProjects'); if (!el) return;
       el.innerHTML = sampleNotice(d) + projectTable(d.projects.slice(0, 5), { boxed: true });
+      // 노션 '인원수' 합계로 핵심 숫자 갱신 (합계가 0이면 content.js 값 유지)
+      var hc = d.stats && d.stats.headcount;
+      var kn = document.querySelector('.kpi[data-auto="headcount"] .kn');
+      if (hc && kn) kn.textContent = hc.toLocaleString('ko-KR');
     }).catch(function () {
       var el = document.getElementById('homeProjects'); if (el) el.innerHTML = loadError();
     });
