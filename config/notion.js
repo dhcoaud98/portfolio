@@ -40,4 +40,5 @@ export const PROPS = {
   place: ['장소'],
   summary: ['프로젝트 소개', '소개'],
   client: ['고객사', '기업명', '클라이언트'],
+  headcount: ['인원수', '인원', '학습자 수'],
 };
