@@ -128,6 +128,7 @@ function toProject(page, db) {
     status: statusKo(pick(page, PROPS.status)),
     place: pick(page, PROPS.place) || null,
     summary: pick(page, PROPS.summary) || '',
+    headcount: toCount(pick(page, PROPS.headcount)),
     links,
     updated: page.last_edited_time,
   };
