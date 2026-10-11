@@ -102,7 +102,7 @@ article.page{gap:var(--s-6)}
 .kpi{border-top:2px solid var(--ink);padding-top:var(--s-3);display:grid;gap:2px;align-content:start}
 .kpi b{font-size:var(--fs-number);font-weight:800;letter-spacing:-.03em;line-height:1.15;font-variant-numeric:tabular-nums}
 .kpi b small{font-size:var(--fs-small);font-weight:700;color:var(--sub);margin-left:2px}
-.kpi span{font-size:var(--fs-caption);color:var(--sub);line-height:1.5}
+.kpi > span{font-size:var(--fs-caption);color:var(--sub);line-height:1.5}
 .two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.6fr);gap:var(--s-6)}
 .comp{display:grid;gap:var(--s-4)}
 .comp div{display:grid;gap:2px}
