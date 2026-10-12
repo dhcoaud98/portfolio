@@ -28,7 +28,10 @@ export const RULES = {
   cacheSeconds: 120,
 };
 
-// URL 속성의 버튼 이름 바꾸기 (속성 이름 → 화면에 보일 이름)
+// 핵심 숫자 '참여 기업 AX 교육 과정' 계산 기준: '유형'에 아래 값이 모두 들어 있는 공개 프로젝트
+export const KPI_RULES = { courseRoles: ['실습코치', 'B2B'] };
+
+// URL 속성의 버튼 이름 바꾸기
 export const LINK_LABELS = { URL: '관련 링크' };
 
 // 속성 이름 매핑 — 노션 속성 이름을 바꾸면 여기만 고치면 됩니다 (앞에 있는 이름 우선)
