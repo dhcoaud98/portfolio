@@ -152,10 +152,11 @@
     getProjects().then(function (d) {
       var el = document.getElementById('homeProjects'); if (!el) return;
       el.innerHTML = sampleNotice(d) + projectTable(d.projects.slice(0, 5), { boxed: true });
-      // 노션 '인원수' 합계로 핵심 숫자 갱신 (합계가 0이면 content.js 값 유지)
-      var hc = d.stats && d.stats.headcount;
-      var kn = document.querySelector('.kpi[data-auto="headcount"] .kn');
-      if (hc && kn) kn.textContent = hc.toLocaleString('ko-KR');
+      // 노션 데이터로 핵심 숫자 갱신 (auto 값: courses, headcount / 0이면 content.js 값 유지)
+      document.querySelectorAll('.kpi[data-auto]').forEach(function (k) {
+        var v = d.stats && d.stats[k.getAttribute('data-auto')];
+        if (v) k.querySelector('.kn').textContent = v.toLocaleString('ko-KR');
+      });
     }).catch(function () {
       var el = document.getElementById('homeProjects'); if (el) el.innerHTML = loadError();
     });
