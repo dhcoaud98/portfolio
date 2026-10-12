@@ -1,5 +1,5 @@
 // Notion 공식 API 클라이언트 (외부 패키지 없이 fetch 사용)
-import { PROJECT_DATABASES, RULES, PROPS, LINK_LABELS } from '../../config/notion.js';
+import { PROJECT_DATABASES, RULES, PROPS, LINK_LABELS, KPI_RULES } from '../../config/notion.js';
 import { SAMPLE_PROJECTS, SAMPLE_BLOCKS } from './sample.js';
 
 const API = 'https://api.notion.com/v1';
@@ -77,9 +77,15 @@ function pick(page, names) {
 // '21', '약 21명', 21 → 21 (숫자가 없으면 0)
 const toCount = (v) => (typeof v === 'number' ? v : Number(String(v ?? '').replace(/[^0-9.]/g, '')) || 0);
 
-// 핵심 숫자: 공개 프로젝트의 인원수 합계 (상태가 '예정'인 과정은 제외)
+// 핵심 숫자 (공개 프로젝트 중 상태가 '예정'인 과정은 제외)
+//  - courses: '유형'에 KPI_RULES.courseRoles 가 모두 있는 과정 수
+//  - headcount: '인원수' 합계
 function stats(projects) {
-  return { headcount: projects.filter((p) => p.status !== '예정').reduce((n, p) => n + (p.headcount || 0), 0) };
+  const active = projects.filter((p) => p.status !== '예정');
+  return {
+    courses: active.filter((p) => KPI_RULES.courseRoles.every((r) => p.roles.includes(r))).length,
+    headcount: active.reduce((n, p) => n + (p.headcount || 0), 0),
+  };
 }
 
 const toList = (v) =>
