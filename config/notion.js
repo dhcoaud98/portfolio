@@ -7,10 +7,10 @@
 // org: 소속(회사/기관), category: 프로젝트 분류(필터에 사용)
 export const PROJECT_DATABASES = [
   { id: '3d524b71477f80a387c1c00e17a9f5c0', org: '코멘토 · 포텐스닷', category: 'AX 기업교육' },
-  { id: '6e124b71477f83119827816f76d52f77', org: '유비크코리아', category: '웹 퍼블리싱' },
-  { id: '06024b71477f83d0aaab81c8f3949ff6', org: '하우투약', category: '개발' },
-  { id: '53e24b71477f8262b86b812bce5abf55', org: '유리프트', category: '교육 콘텐츠' },
-  { id: '20024b71477f831ab52981ca745e8830', org: 'SSAFY', category: '개발' },
+  { id: '440b8b4254774f008bef203fbfb964d6', org: '유비크코리아', category: '웹 퍼블리싱' },
+  { id: 'b8fae01dd8f540449ec40dc56aeee223', org: '하우투약', category: '개발' },
+  { id: '55f70a4e79fa4ef8bb131c56cdef5ea5', org: '유리프트', category: '교육 콘텐츠' },
+  { id: 'aaf14436a8e14b9ea9d8be87e7e5a23f', org: 'SSAFY', category: '개발' },
 ];
 
 export const RULES = {
