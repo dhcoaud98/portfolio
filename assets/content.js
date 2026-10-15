@@ -13,6 +13,7 @@ window.PROFILE = {
     phone: '010-9112-4896',            // 예: '010-1234-5678' — 비워두면 화면에 표시되지 않습니다
     blog: 'https://blog.naver.com/dhcoaud98',
     github: 'https://github.com/dhcoaud98',
+    notion: 'https://chaemyeong.notion.site/3aa24b71477f80619d85d50d3c8348b4',   // 비워두면 표시되지 않습니다
     note: '교육 운영·HRD 관련 문의나 채용 제안은 이메일 또는 전화로 연락 주세요.',
   },
 
