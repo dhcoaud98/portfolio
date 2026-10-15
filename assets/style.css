@@ -30,10 +30,14 @@
 :root[data-palette="green"]{
   --navy-900:#0F2E2A; --navy-700:#1E4D47; --navy-500:#2F6F67; --navy-100:#E6F0EE; --navy-50:#F2F7F6;
   --accent:var(--navy-700); --soft:var(--navy-100);
+  /* 배경·선·글자도 그린 계열로 */
+  --bg:#F1F6F4; --surface:#FFFFFF; --panel:#E8F1EE; --line:#D8E4DF;
+  --ink:#17231F; --ink-2:#34443F; --sub:#56665F;
 }
 @media (prefers-color-scheme:dark){
   :root[data-palette="green"]:not([data-theme="light"]){
     --navy-900:#C5E3DD; --navy-50:#13201E; --accent:#7CC2B5; --accent-ink:#0F141B; --soft:#17302C;
+    --bg:#0E1513; --surface:#15201D; --panel:#121B19; --line:#233330; --ink:#E5EEEA; --ink-2:#C6D4CF; --sub:#9AB0A8;
   }
 }
 @media (max-width:1024px){ :root{ --gutter:24px } }
