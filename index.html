@@ -16,6 +16,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@700&display=swap">
 <link rel="stylesheet" href="/assets/style.css">
+<script>try{var t=localStorage.getItem('palette');if(t==='green')document.documentElement.setAttribute('data-palette','green')}catch(e){}</script>
 </head>
 <body>
 <a class="skip" href="#app">본문 바로가기</a>
@@ -23,6 +24,10 @@
   <div class="wrap nav-in">
     <a href="/" data-link class="brand">오채명</a>
     <nav class="menu" id="menu" aria-label="주요 메뉴"></nav>
+    <div class="palette" role="group" aria-label="색 테마">
+      <button type="button" data-pal="navy" style="--sw:#1F3A5F" aria-label="네이비 테마" title="네이비"></button>
+      <button type="button" data-pal="green" style="--sw:#1E4D47" aria-label="딥 그린 테마" title="딥 그린"></button>
+    </div>
     <button class="btn sm" type="button" id="pdfBtn">PDF 저장</button>
   </div>
 </header>
@@ -38,5 +43,19 @@
 
 <script src="/assets/content.js"></script>
 <script src="/assets/app.js"></script>
+<script>
+// 색 테마 전환 (네이비 / 딥 그린) — 선택은 방문자 브라우저에 저장
+(function () {
+  var root = document.documentElement;
+  var btns = document.querySelectorAll('.palette [data-pal]');
+  function set(p) {
+    if (p === 'green') root.setAttribute('data-palette', 'green'); else root.removeAttribute('data-palette');
+    btns.forEach(function (b) { b.setAttribute('aria-pressed', String(b.getAttribute('data-pal') === p)); });
+    try { localStorage.setItem('palette', p); } catch (e) {}
+  }
+  btns.forEach(function (b) { b.addEventListener('click', function () { set(b.getAttribute('data-pal')); }); });
+  set(root.getAttribute('data-palette') === 'green' ? 'green' : 'navy');
+})();
+</script>
 </body>
 </html>
