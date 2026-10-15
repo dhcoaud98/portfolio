@@ -50,6 +50,8 @@
   var btns = document.querySelectorAll('.palette [data-pal]');
   function set(p) {
     if (p === 'green') root.setAttribute('data-palette', 'green'); else root.removeAttribute('data-palette');
+    var meta = document.querySelector('meta[name="theme-color"]');
+    if (meta) meta.setAttribute('content', p === 'green' ? '#1E4D47' : '#1F3A5F');
     btns.forEach(function (b) { b.setAttribute('aria-pressed', String(b.getAttribute('data-pal') === p)); });
     try { localStorage.setItem('palette', p); } catch (e) {}
   }
