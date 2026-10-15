@@ -26,6 +26,16 @@
     color-scheme:dark;
   }
 }
+/* ---------- 색 테마: 딥 그린 (상단 오른쪽 버튼으로 전환) ---------- */
+:root[data-palette="green"]{
+  --navy-900:#0F2E2A; --navy-700:#1E4D47; --navy-500:#2F6F67; --navy-100:#E6F0EE; --navy-50:#F2F7F6;
+  --accent:var(--navy-700); --soft:var(--navy-100);
+}
+@media (prefers-color-scheme:dark){
+  :root[data-palette="green"]:not([data-theme="light"]){
+    --navy-900:#C5E3DD; --navy-50:#13201E; --accent:#7CC2B5; --accent-ink:#0F141B; --soft:#17302C;
+  }
+}
 @media (max-width:1024px){ :root{ --gutter:24px } }
 @media (max-width:600px){ :root{ --fs-display:34px; --fs-h1:26px; --fs-h2:21px; --fs-h3:17px; --gutter:16px } }
 
@@ -54,6 +64,12 @@ button{font:inherit;color:inherit}
 .menu a:hover{color:var(--ink)}
 .menu a[aria-current="page"]{color:var(--ink);font-weight:700;box-shadow:inset 0 -2px 0 var(--accent)}
 .tabbar{display:none}
+
+/* 색 테마 버튼 */
+.palette{display:flex;gap:4px;align-items:center;padding:3px;border:1px solid var(--line);border-radius:999px;background:var(--surface)}
+.palette button{width:24px;height:24px;border-radius:50%;border:2px solid transparent;padding:0;cursor:pointer;background:var(--sw);display:grid;place-items:center}
+.palette button[aria-pressed="true"]{border-color:var(--ink);box-shadow:inset 0 0 0 2px var(--surface)}
+.palette button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 
 /* 제작 안내 문구 (상단 바 오른쪽 아래) */
 .madewith{margin:0 auto;padding-top:var(--s-2);text-align:right;font-size:12px;line-height:1.5;color:var(--sub);letter-spacing:0}
@@ -263,7 +279,7 @@ article.page{gap:var(--s-6)}
 }
 @media (max-width:760px){
   .menu{display:none}
-  #pdfBtn{margin-left:auto}
+  .palette{margin-left:auto}
   .tabbar{display:grid;grid-template-columns:repeat(5,1fr);position:fixed;left:0;right:0;bottom:0;z-index:30;background:var(--surface);border-top:1px solid var(--line);padding:4px 0 calc(4px + env(safe-area-inset-bottom,0px))}
   .tabbar a{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:11px;font-weight:500;color:var(--sub);text-decoration:none;padding:6px 0}
   .tabbar a svg{width:20px;height:20px}
@@ -301,7 +317,7 @@ article.page{gap:var(--s-6)}
 @media print{
   :root{ --bg:#fff; --surface:#fff; --panel:#F3F5F8; color-scheme:light }
   body{font-size:11.5pt;padding:0}
-  .nav,.madewith,.tabbar,.foot,#pdfBtn,.filters,.cta,.ctaband .btn,.skip,.toast{display:none!important}
+  .nav,.madewith,.palette,.tabbar,.foot,#pdfBtn,.filters,.cta,.ctaband .btn,.skip,.toast{display:none!important}
   #app{padding:0}
   .prow{break-inside:avoid}
   .titem .tb{display:grid!important}
