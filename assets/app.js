@@ -133,6 +133,7 @@
         '<div class="ct"><a href="mailto:' + esc(c.email) + '">' + esc(c.email) + '</a>' +
           (c.phone ? '<a href="' + telHref(c.phone) + '">' + esc(c.phone) + '</a>' : '') +
           '<a href="' + esc(c.blog) + '" target="_blank" rel="noopener">블로그</a>' +
+          (c.notion ? '<a href="' + esc(c.notion) + '" target="_blank" rel="noopener">Notion</a>' : '') +
           '<a href="' + esc(c.github) + '" target="_blank" rel="noopener">GitHub</a></div>' +
         '<div class="cta"><a class="btn" href="/projects" data-link>프로젝트 보기</a><a class="btn s" href="/contact" data-link>연락하기</a></div></div>' +
         '<dl class="box facts">' + P.facts.map(function (f) { return '<div><dt>' + esc(f[0]) + '</dt><dd>' + esc(f[1]) + '</dd></div>'; }).join('') + '</dl>' +
@@ -293,6 +294,7 @@
       '</section>' +
       '<section class="block"><div class="secth"><h2>더 알아보기</h2></div><div class="strip">' +
         '<a href="' + esc(c.blog) + '" target="_blank" rel="noopener">채명로그 (네이버 블로그) ↗</a>' +
+        (c.notion ? '<a href="' + esc(c.notion) + '" target="_blank" rel="noopener">Notion 포트폴리오 ↗</a>' : '') +
         '<a href="' + esc(c.github) + '" target="_blank" rel="noopener">GitHub ↗</a>' +
         '<a href="/projects" data-link>프로젝트 목록 →</a></div></section>' +
       '</div>';
