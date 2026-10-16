@@ -11,6 +11,7 @@ export const PROJECT_DATABASES = [
   { id: 'b8fae01dd8f540449ec40dc56aeee223', org: '하우투약', category: '개발' },
   { id: '55f70a4e79fa4ef8bb131c56cdef5ea5', org: '유리프트', category: '교육 콘텐츠' },
   { id: 'aaf14436a8e14b9ea9d8be87e7e5a23f', org: 'SSAFY', category: '개발' },
+  { id: '97324b71477f83d5b80588b42219a845', org: '개인 프로젝트', category: '개인 프로젝트' },
 ];
 
 export const RULES = {
