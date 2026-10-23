@@ -1,5 +1,6 @@
 // NOTION_TOKEN 이 없을 때(로컬 미리보기 등) 쓰는 스냅샷 데이터 — 2026.10.09 노션 기준.
 // 실제 배포에서는 노션 API 데이터가 이 내용을 대체합니다.
+// tracks: 노션 '노출 포트폴리오' (없으면 HRD·HRM 양쪽), hrmSummary: 노션 'HRM 요약'
 
 const P = (o) => ({ links: [], place: null, client: null, summary: '', updated: '2026-10-09T00:00:00.000Z', ...o });
 
@@ -8,12 +9,14 @@ export const SAMPLE_PROJECTS = [
   P({ id: '3e324b71477f8049b19acd40042bda31', _public: true, title: '로컬 AI 메이커스랩 2차수', org: '코멘토 · 포텐스닷', category: 'AX 기업교육',
       period: { start: '2026-10-06', end: '2026-10-07' }, roles: ['실습코치', '운영', 'B2G'],
       tech: ['앱스스크립트', '프롬프트엔지니어링', '구글워크스페이스', 'Google AI Studio', 'vscode', 'python'],
-      status: '진행 중', place: '수토피아', summary: '비개발자도 쉽게 할 수 있는 생성형 AI 사전교육 (14시간) 운영 매니저' }),
+      status: '진행 중', place: '수토피아', summary: '비개발자도 쉽게 할 수 있는 생성형 AI 사전교육 (14시간) 운영 매니저',
+      hrmSummary: '33명 대상 2일·14시간 과정 운영 매니저. 수강생 명단·출석 체크 준비, 강사 컨택, 교육장 세팅부터 현장 정리까지 운영 전 과정 담당.' }),
   P({ id: '3e924b71477f80c38c98c04e28cc231f', _public: true, client: '대상(주)', title: 'AI 실무 활용과정 · 추가2차수 · 업무자동화 Track', org: '코멘토 · 포텐스닷', category: 'AX 기업교육',
       period: { start: '2026-10-01', end: '2026-10-02' }, roles: ['실습코치'], tech: [], status: '완료', summary: 'AI 실무 활용과정 실습 코치' }),
   P({ id: '3ea24b71477f8041b51cf1822e63af13', _public: true, client: '한국피앤지', title: '마케팅 직무 면접 운영', org: '코멘토 · 포텐스닷', category: 'AX 기업교육',
       period: { start: '2026-09-30', end: null }, roles: ['면접', 'HR'], tech: ['google meet'], status: '완료',
       summary: '한국피앤지 마케팅 직무 온라인 면접 지원 업무',
+      hrmSummary: '온라인 면접 3타임·지원자 10명 진행 지원. 구글밋 면접장 오픈, 시작·마무리 안내, 면접 평가표 작성, 보안유지 서약서 작성까지 채용 면접 운영 실무 수행.',
       links: [{ label: '관련 링크', url: 'https://comento.kr/career/dreamverse/internz-mirae_startup-44' }] }),
   P({ id: '3eb24b71477f807392b3fe18587aca53', _public: false, title: '엑셀 자동화 업무', org: '코멘토 · 포텐스닷', category: 'AX 기업교육',
       period: { start: '2026-09-29', end: null }, roles: ['업무자동화'], tech: [], status: '예정' }),
@@ -33,13 +36,13 @@ export const SAMPLE_PROJECTS = [
       period: null, roles: [], tech: [], status: '예정' }),
 
   // ---- 그 외 데이터베이스 (공개여부 속성 없음 → 표시)
-  P({ id: 'd7624b71477f82dbb54901b09fd48775', _public: true, title: '부성테크', org: '유비크코리아', category: '웹 퍼블리싱',
+  P({ id: 'd7624b71477f82dbb54901b09fd48775', _public: true, tracks: ['HRD'], title: '부성테크', org: '유비크코리아', category: '웹 퍼블리싱',
       period: { start: '2023-08-27', end: '2023-12-27' }, roles: ['웹퍼블리셔'], tech: [], status: '완료', summary: '부성테크 홈페이지 추가 제작' }),
-  P({ id: 'a7f24b71477f83b59566011526bc879a', _public: true, title: '(과제) 하우투약', org: '하우투약', category: '개발',
+  P({ id: 'a7f24b71477f83b59566011526bc879a', _public: true, tracks: ['HRD'], title: '(과제) 하우투약', org: '하우투약', category: '개발',
       period: { start: '2023-08-21', end: '2023-08-27' }, roles: ['개발팀'], tech: [], status: '완료', summary: '하우투약 홈페이지 nextjs13으로 전환' }),
   P({ id: 'c6424b71477f831b856101bfb6a8d463', _public: true, title: '코딩밸리', org: '유리프트', category: '교육 콘텐츠',
       period: { start: '2023-02-01', end: null }, roles: ['컨텐츠 제작'], tech: [], status: '진행 중', summary: '이제 코딩도 모바일로 학습해요!' }),
-  P({ id: '66724b71477f8367845c017345a9e33d', _public: true, title: '나.작.귀(나의 작고 귀여운 화이트 크리스마스)', org: 'SSAFY', category: '개발',
+  P({ id: '66724b71477f8367845c017345a9e33d', _public: true, tracks: ['HRD'], title: '나.작.귀(나의 작고 귀여운 화이트 크리스마스)', org: 'SSAFY', category: '개발',
       period: { start: '2022-10-11', end: '2022-11-18' }, roles: ['Frontend', '와이어프레임', 'React', '로그인', 'axios', 'Unity', 'PPT', 'Notion관리'], tech: [],
       status: '완료', summary: '스노우 볼을 만들어 친구에게 선물하세요!',
       links: [{ label: 'Figma', url: 'https://www.figma.com/file/gXm7jYNyc1DVKgzznc8p3s/A601?node-id=0%3A1' }, { label: 'Github', url: 'https://github.com/dhcoaud98/Doyouwannabuildasnowball' }] }),
@@ -47,7 +50,7 @@ export const SAMPLE_PROJECTS = [
       period: { start: '2022-08-22', end: '2022-10-07' }, roles: ['Frontend', '와이어프레임', '로그인', 'React', 'axios', 'PPT', 'UCC', 'Jira관리', 'Notion관리', 'Myrecord기능', '화면 Swiper', '데이터셋제작'], tech: [],
       status: '완료', summary: '기타 초보를 위한 기타연습 사이트 입니다.',
       links: [{ label: 'Figma', url: 'https://www.figma.com/file/Pcgh0OiAFDwuTpME69k7j4/Untitled?node-id=0%3A1' }, { label: 'Github', url: 'https://github.com/dhcoaud98/GIRINEE' }] }),
-  P({ id: '99c24b71477f83918d29819057b6dda8', _public: true, title: 'PROSN', org: 'SSAFY', category: '개발',
+  P({ id: '99c24b71477f83918d29819057b6dda8', _public: true, tracks: ['HRD'], title: 'PROSN', org: 'SSAFY', category: '개발',
       period: { start: '2022-08-19', end: '2022-11-29' }, roles: ['Frontend', '와이어프레임', 'vue', '회원가입 및 로그인', 'axios', 'PPT', 'UCC', '프로필 개발', '스터디 기능 개발', '검색기능', '사이드바 개발'], tech: [],
       status: '완료', summary: 'IT 학습을 위한 웹 사이트 입니다.',
       links: [{ label: 'Github', url: 'https://github.com/dhcoaud98/PROSN' }] }),
