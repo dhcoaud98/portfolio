@@ -22,11 +22,22 @@ export const RULES = {
   // (코멘토 외 데이터베이스에도 '공개여부'를 추가하면 그 값이 우선합니다)
   showWhenFlagMissing: true,
   // 웹앱에 절대 노출하지 않을 속성 (고객사 교안 등 내부 자료 보호)
-  hiddenProps: ['파일', '배경사진', '공개여부'],
+  hiddenProps: ['파일', '배경사진', '공개여부', '노출 포트폴리오', 'HRM 요약'],
   // 본문 안의 첨부 파일·PDF 블록 숨김 (교안 등 내부 자료 보호)
   hideFileBlocks: true,
   // 노션 수정 → 웹앱 반영까지 최대 대기 시간(초)
   cacheSeconds: 120,
+};
+
+// 사이트 버전 (HRD / HRM) — 같은 코드·같은 노션으로 두 사이트를 운영합니다.
+//  - Vercel 환경변수 PORTFOLIO_TRACK 으로 고릅니다. 없으면 HRD (기존 사이트 그대로)
+//  - 노션 '노출 포트폴리오' 속성에 그 버전이 체크된 프로젝트만 표시
+//  - 속성이 비어 있거나 속성 자체가 없는 DB는 양쪽 모두 표시 (showWhenEmpty)
+export const TRACKS = {
+  default: 'HRD',
+  available: ['HRD', 'HRM'],
+  prop: '노출 포트폴리오',
+  showWhenEmpty: true,
 };
 
 // 핵심 숫자 '참여 기업 AX 교육 과정' 계산 기준: '유형'에 아래 값이 모두 들어 있는 공개 프로젝트
@@ -45,4 +56,5 @@ export const PROPS = {
   summary: ['프로젝트 소개', '소개'],
   client: ['고객사', '기업명', '클라이언트'],
   headcount: ['인원수', '인원', '학습자 수'],
+  hrmSummary: ['HRM 요약'],   // HRM 사이트 상세 화면 맨 위에 표시 (HRD 사이트에서는 보내지 않음)
 };
