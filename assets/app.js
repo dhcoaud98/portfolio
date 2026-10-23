@@ -2,7 +2,38 @@
 (function () {
   'use strict';
   var P = window.PROFILE;
+  var TRACK = 'HRD';
   var app = document.getElementById('app');
+
+  // 사이트 버전(HRD / HRM)에 맞춰 고정 콘텐츠를 고릅니다 — content.js 의 PROFILE_VARIANTS 참고
+  function applyVariant(track) {
+    var base = window.PROFILE, v = (window.PROFILE_VARIANTS || {})[track];
+    TRACK = v ? track : 'HRD';
+    if (!v) { P = base; return; }
+    var out = {};
+    Object.keys(base).forEach(function (k) { out[k] = base[k]; });
+    Object.keys(v).forEach(function (k) {
+      if (k === 'text') { out.text = {}; Object.keys(base.text).forEach(function (t) { out.text[t] = base.text[t]; }); Object.keys(v.text).forEach(function (t) { out.text[t] = v.text[t]; }); }
+      else if (k !== 'contactNote' && k !== 'skillsCore') out[k] = v[k];
+    });
+    out.contact = {}; Object.keys(base.contact).forEach(function (k) { out.contact[k] = base.contact[k]; });
+    if (v.contactNote) out.contact.note = v.contactNote;
+    out.skills = {}; Object.keys(base.skills).forEach(function (k) { out.skills[k] = base.skills[k]; });
+    if (v.skillsCore) out.skills.hrd = v.skillsCore;
+    out.career = base.career.map(function (x) {
+      var y = {}; Object.keys(x).forEach(function (k) { y[k] = x[k]; });
+      if (x.bridgeHrm) y.bridge = x.bridgeHrm;
+      return y;
+    });
+    P = out;
+  }
+  // 요약 화면: featured 에 적은 프로젝트를 먼저, 나머지는 최신 순
+  function featuredFirst(list) {
+    var ids = (P.featured || []).map(function (x) { return String(x).replace(/-/g, '').toLowerCase(); });
+    if (!ids.length) return list;
+    var pinned = ids.map(function (id) { return list.filter(function (p) { return p.id === id; })[0]; }).filter(Boolean);
+    return pinned.concat(list.filter(function (p) { return pinned.indexOf(p) < 0; }));
+  }
 
   /* ---------- utils ---------- */
   function esc(s) {
@@ -60,6 +91,7 @@
   }
 
   /* ---------- nav ---------- */
+  var c;
   var NAV = [
     { href: '/', label: '요약', icon: '<path d="M4 5h16M4 12h16M4 19h10"/>' },
     { href: '/projects', label: '프로젝트', icon: '<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>' },
@@ -67,6 +99,8 @@
     { href: '/skills', label: '스킬 · 자격', short: '스킬', icon: '<path d="M22 10L12 5 2 10l10 5 10-5z"/><path d="M6 12v5c3 2 9 2 12 0v-5"/>' },
     { href: '/contact', label: '연락처', icon: '<path d="M4 6h16v12H4z"/><path d="M4 7l8 6 8-6"/>' },
   ];
+  function setupChrome() {
+  c = P.contact;
   document.getElementById('menu').innerHTML = NAV.map(function (n) {
     return '<a href="' + n.href + '" data-link>' + n.label + '</a>';
   }).join('');
@@ -81,11 +115,13 @@
     document.querySelectorAll('details').forEach(function (d) { d.open = d.dataset.wasOpen === '1'; });
   });
 
-  var c = P.contact;
   document.getElementById('foot').innerHTML =
     '<span><b>' + esc(P.name) + '</b> · ' + esc(P.label) + '</span>' +
     '<span class="strip"><a href="mailto:' + esc(c.email) + '">' + esc(c.email) + '</a>' +
     (c.phone ? '<a href="' + telHref(c.phone) + '">' + esc(c.phone) + '</a>' : '') + '</span>';
+  var desc = document.querySelector('meta[name="description"]');
+  if (desc) desc.setAttribute('content', P.oneLiner);
+  }
 
   /* ---------- shared blocks ---------- */
   function projectTable(list, opts) {
@@ -123,7 +159,7 @@
 
   /* ---------- pages ---------- */
   function pageHome() {
-    document.title = P.name + ' | HRD · 교육 운영 포트폴리오';
+    document.title = P.name + ' | ' + P.text.siteTitle;
     app.innerHTML =
       '<div class="page">' +
       '<section class="hero">' +
@@ -152,7 +188,7 @@
       '</div>';
     getProjects().then(function (d) {
       var el = document.getElementById('homeProjects'); if (!el) return;
-      el.innerHTML = sampleNotice(d) + projectTable(d.projects.slice(0, 5), { boxed: true });
+      el.innerHTML = sampleNotice(d) + projectTable(featuredFirst(d.projects).slice(0, 5), { boxed: true });
       // 노션 데이터로 핵심 숫자 갱신 (auto 값: courses, headcount / 0이면 content.js 값 유지)
       document.querySelectorAll('.kpi[data-auto]').forEach(function (k) {
         var v = d.stats && d.stats[k.getAttribute('data-auto')];
@@ -167,7 +203,7 @@
   function pageProjects() {
     document.title = '프로젝트 | ' + P.name;
     app.innerHTML = '<div class="page">' +
-      '<header class="ph"><span class="label">PROJECTS</span><h1>프로젝트</h1><p>기업 AX 교육 현장부터 교육 콘텐츠 제작, 개발 프로젝트까지 최신 순으로 정리했습니다. 항목을 누르면 상세 내용을 볼 수 있습니다.</p></header>' +
+      '<header class="ph"><span class="label">PROJECTS</span><h1>프로젝트</h1><p>' + esc(P.text.projectsIntro) + '</p></header>' +
       '<section class="block"><div class="toolbar"><div class="filters" id="pf" role="group" aria-label="분류"></div><span class="sub" style="font-size:13px" id="pcount"></span></div><div id="plist">' + skeleton(6) + '</div></section>' +
       contactBand() + '</div>';
     getProjects().then(function (d) {
@@ -207,6 +243,7 @@
       app.innerHTML = '<article class="page">' +
         '<header class="dhead"><div class="crumb"><a href="/projects" data-link>프로젝트</a> › ' + esc(p.category) + '</div>' +
           '<span class="who">' + esc(who) + '</span><h1>' + esc(p.title) + '</h1>' + (p.summary ? '<p>' + esc(p.summary) + '</p>' : '') + '</header>' +
+        (p.hrmSummary && P.text.focusLabel ? '<section class="focus" aria-label="' + esc(P.text.focusLabel) + '"><span class="k">' + esc(P.text.focusLabel) + '</span><p>' + esc(p.hrmSummary) + '</p></section>' : '') +
         '<dl class="info">' +
           '<div><dt>기업 · 소속</dt><dd>' + esc(p.client || p.org) + '</dd></div>' +
           '<div><dt>기간</dt><dd class="num">' + esc(fmtPeriod(p.period)) + '</dd></div>' +
@@ -233,14 +270,14 @@
       if (compact) return '<div class="titem"><summary style="cursor:default">' + head + '<span></span></summary></div>';
       return '<details class="titem"' + (x.now ? ' open' : '') + '><summary>' + head + '<span class="chev" aria-hidden="true">▼</span></summary>' +
         '<div class="tb"><ul>' + x.body.map(function (b) { return '<li>' + esc(b) + '</li>'; }).join('') + '</ul>' +
-        (x.bridge ? '<p class="bridge"><b>HRD 연결</b>' + esc(x.bridge) + '</p>' : '') + '</div></details>';
+        (x.bridge ? '<p class="bridge"><b>' + esc(P.text.bridgeLabel) + '</b>' + esc(x.bridge) + '</p>' : '') + '</div></details>';
     }).join('') + '</div>';
   }
   var careerFilter = 'all';
   function pageCareer() {
     document.title = '경력 | ' + P.name;
     app.innerHTML = '<div class="page">' +
-      '<header class="ph"><span class="label">CAREER</span><h1>경력</h1><p>최신 순입니다. 항목을 펼치면 담당 업무와 그 경험이 HRD로 이어지는 지점을 볼 수 있습니다.</p></header>' +
+      '<header class="ph"><span class="label">CAREER</span><h1>경력</h1><p>' + esc(P.text.careerIntro) + '</p></header>' +
       '<section class="block"><div class="filters" id="cf" role="group" aria-label="분야"></div><div id="clist"></div></section>' +
       contactBand() + '</div>';
     function draw() {
@@ -261,10 +298,10 @@
     document.title = '스킬 · 자격 | ' + P.name;
     var S = P.skills;
     app.innerHTML = '<div class="page">' +
-      '<header class="ph"><span class="label">SKILLS · EDUCATION</span><h1>스킬 · 자격</h1><p>교육 현장에서 쓰는 AI 도구와 HRD 역량, 개발자로 일하며 익힌 기술, 학력과 자격입니다.</p></header>' +
+      '<header class="ph"><span class="label">SKILLS · EDUCATION</span><h1>스킬 · 자격</h1><p>' + esc(P.text.skillsIntro) + '</p></header>' +
       '<section class="grid2">' +
-        '<div class="block"><div class="secth"><h2>AI · AX 교육 도구</h2></div><div class="chips">' + chips(S.ai) + '</div></div>' +
-        '<div class="block"><div class="secth"><h2>교육 · HRD 역량</h2></div><div class="chips">' + chips(S.hrd, 'o') + '</div></div>' +
+        '<div class="block"><div class="secth"><h2>' + esc(P.text.skillsAi) + '</h2></div><div class="chips">' + chips(S.ai) + '</div></div>' +
+        '<div class="block"><div class="secth"><h2>' + esc(P.text.skillsCore) + '</h2></div><div class="chips">' + chips(S.hrd, 'o') + '</div></div>' +
       '</section>' +
       '<section class="block"><div class="secth"><h2>개발</h2></div><div>' + S.dev.map(function (r) {
         return '<div class="srow"><b>' + esc(r[0]) + '</b><span class="lv">' + esc(r[1]) + '</span><span>' + esc(r[2]) + '</span></div>';
@@ -393,5 +430,12 @@
     app.focus({ preventScroll: true });
   });
   window.addEventListener('popstate', route);
-  route();
+
+  // 시작: 이 배포의 버전(HRD / HRM)을 확인한 뒤 화면을 그립니다. 확인 실패 시 HRD
+  function start(track) { applyVariant(track); setupChrome(); route(); }
+  var started = false;
+  function once(track) { if (!started) { started = true; start(track); } }
+  setTimeout(function () { once('HRD'); }, 1500);
+  fetch('/api/site').then(function (r) { return r.ok ? r.json() : {}; })
+    .then(function (d) { once(d && d.track); }, function () { once('HRD'); });
 })();
