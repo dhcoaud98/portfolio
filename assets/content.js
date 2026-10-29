@@ -8,7 +8,7 @@
 window.PROFILE = {
   name: '오채명',
   nameEn: 'OH CHAEMYEONG',
-  label: 'HRD · 교육 운영 · AX 교육',
+  label: 'HR · 교육 운영 · AX 교육',
   oneLiner: '기업 AX 교육 현장에서 학습자가 AI를 실제 업무에 쓰도록 돕는 교육 운영자입니다.',
 
   // 화면 문구
