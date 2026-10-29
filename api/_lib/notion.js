@@ -1,5 +1,5 @@
 // Notion 공식 API 클라이언트 (외부 패키지 없이 fetch 사용)
-import { PROJECT_DATABASES, RULES, PROPS, LINK_LABELS, KPI_RULES, TRACKS } from '../../config/notion.js';
+import { PROJECT_DATABASES, RULES, PROPS, LINK_LABELS, KPI_RULES } from '../../config/notion.js';
 import { SAMPLE_PROJECTS, SAMPLE_BLOCKS } from './sample.js';
 
 const API = 'https://api.notion.com/v1';
@@ -9,18 +9,6 @@ const clean = (id) => String(id || '').replace(/-/g, '').toLowerCase();
 const DB_BY_ID = new Map(PROJECT_DATABASES.map((d) => [clean(d.id), d]));
 
 export const hasToken = () => Boolean(process.env.NOTION_TOKEN);
-
-/* ---------- 사이트 버전 (HRD / HRM) ---------- */
-export function currentTrack() {
-  const t = String(process.env.PORTFOLIO_TRACK || TRACKS.default).trim().toUpperCase();
-  return TRACKS.available.includes(t) ? t : TRACKS.default;
-}
-// '노출 포트폴리오'에 현재 버전이 있으면 표시, 비어 있으면 showWhenEmpty
-export function inTrack(tracks, track = currentTrack()) {
-  if (!tracks || !tracks.length) return TRACKS.showWhenEmpty;
-  return tracks.map((x) => String(x).trim().toUpperCase()).includes(track);
-}
-const pageTracks = (page) => toList(page.properties[TRACKS.prop] ? readValue(page.properties[TRACKS.prop]) : null);
 
 async function notion(path, { method = 'GET', body } = {}) {
   const res = await fetch(API + path, {
@@ -130,7 +118,7 @@ const STATUS_KO = {
 };
 const statusKo = (s) => (s ? STATUS_KO[String(s).toLowerCase()] || s : null);
 
-function toProject(page, db, track = currentTrack()) {
+function toProject(page, db) {
   const titleProp = Object.values(page.properties).find((p) => p.type === 'title');
   let title = titleProp ? plain(titleProp.title).trim() : '제목 없음';
   let client = pick(page, PROPS.client);
@@ -159,7 +147,6 @@ function toProject(page, db, track = currentTrack()) {
     summary: pick(page, PROPS.summary) || '',
     headcount: toCount(pick(page, PROPS.headcount)),
     cover: coverUrl(page),
-    hrmSummary: track === 'HRM' ? pick(page, PROPS.hrmSummary) || null : null,
     links,
     updated: page.last_edited_time,
   };
@@ -179,17 +166,16 @@ const byLatest = (a, b) => sortKey(b).localeCompare(sortKey(a));
 
 /* ---------- 목록 ---------- */
 export async function listProjects() {
-  const track = currentTrack();
   if (!hasToken()) {
-    const list = SAMPLE_PROJECTS.filter((p) => p._public && inTrack(p.tracks, track)).map((p) => strip(p, track)).map(splitTech).sort(byLatest);
-    return { source: 'sample', track, projects: list, stats: stats(list), errors: [] };
+    const list = SAMPLE_PROJECTS.filter((p) => p._public).map(strip).map(splitTech).sort(byLatest);
+    return { source: 'sample', projects: list, stats: stats(list), errors: [] };
   }
   const settled = await Promise.allSettled(
     PROJECT_DATABASES.map(async (db) => {
       const pages = await queryDatabase(clean(db.id));
       return pages
-        .filter((pg) => !pg.archived && !pg.in_trash && isPublic(pg) && inTrack(pageTracks(pg), track))
-        .map((pg) => splitTech(toProject(pg, db, track)));
+        .filter((pg) => !pg.archived && !pg.in_trash && isPublic(pg))
+        .map((pg) => splitTech(toProject(pg, db)));
     })
   );
   const projects = [];
@@ -201,22 +187,20 @@ export async function listProjects() {
       errors.push(PROJECT_DATABASES[i].org);
     }
   });
-  return { source: 'notion', track, projects: projects.sort(byLatest), stats: stats(projects), errors };
+  return { source: 'notion', projects: projects.sort(byLatest), stats: stats(projects), errors };
 }
 
-// 샘플 데이터 내부 표시(_public, tracks) 제거, HRD 사이트에는 HRM 요약을 보내지 않음
-const strip = ({ _public, tracks, hrmSummary, ...p }, track = currentTrack()) =>
-  ({ ...p, hrmSummary: track === 'HRM' ? hrmSummary || null : null });
+// 샘플 데이터 내부 표시(_public) 제거
+const strip = ({ _public, ...p }) => p;
 
 /* ---------- 상세 ---------- */
 export async function getProject(rawId) {
   const id = clean(rawId);
   if (!/^[0-9a-f]{32}$/.test(id)) return null;
 
-  const track = currentTrack();
   if (!hasToken()) {
-    const p = SAMPLE_PROJECTS.find((x) => x.id === id && x._public && inTrack(x.tracks, track));
-    return p ? { source: 'sample', track, project: splitTech(strip(p, track)), blocks: SAMPLE_BLOCKS[id] || SAMPLE_BLOCKS._default } : null;
+    const p = SAMPLE_PROJECTS.find((x) => x.id === id && x._public);
+    return p ? { source: 'sample', project: splitTech(strip(p)), blocks: SAMPLE_BLOCKS[id] || SAMPLE_BLOCKS._default } : null;
   }
 
   let page;
@@ -226,13 +210,13 @@ export async function getProject(rawId) {
     if (e.status === 404 || e.status === 400) return null;
     throw e;
   }
-  // 설정된 프로젝트 데이터베이스에 속한, 공개 페이지이면서 이 사이트 버전에 노출된 것만 허용
+  // 설정된 프로젝트 데이터베이스에 속한 공개 페이지만 허용
   const db = DB_BY_ID.get(clean(page.parent?.database_id));
-  if (!db || page.archived || page.in_trash || !isPublic(page) || !inTrack(pageTracks(page), track)) return null;
+  if (!db || page.archived || page.in_trash || !isPublic(page)) return null;
 
-  const project = splitTech(toProject(page, db, track));
+  const project = splitTech(toProject(page, db));
   const blocks = dropTitleHeading(await getBlocks(id, 0), project);
-  return { source: 'notion', track, project, blocks };
+  return { source: 'notion', project, blocks };
 }
 
 // 본문 첫 제목이 프로젝트 제목을 반복하면 생략

@@ -2,31 +2,8 @@
 (function () {
   'use strict';
   var P = window.PROFILE;
-  var TRACK = 'HRD';
   var app = document.getElementById('app');
 
-  // 사이트 버전(HRD / HRM)에 맞춰 고정 콘텐츠를 고릅니다 — content.js 의 PROFILE_VARIANTS 참고
-  function applyVariant(track) {
-    var base = window.PROFILE, v = (window.PROFILE_VARIANTS || {})[track];
-    TRACK = v ? track : 'HRD';
-    if (!v) { P = base; return; }
-    var out = {};
-    Object.keys(base).forEach(function (k) { out[k] = base[k]; });
-    Object.keys(v).forEach(function (k) {
-      if (k === 'text') { out.text = {}; Object.keys(base.text).forEach(function (t) { out.text[t] = base.text[t]; }); Object.keys(v.text).forEach(function (t) { out.text[t] = v.text[t]; }); }
-      else if (k !== 'contactNote' && k !== 'skillsCore') out[k] = v[k];
-    });
-    out.contact = {}; Object.keys(base.contact).forEach(function (k) { out.contact[k] = base.contact[k]; });
-    if (v.contactNote) out.contact.note = v.contactNote;
-    out.skills = {}; Object.keys(base.skills).forEach(function (k) { out.skills[k] = base.skills[k]; });
-    if (v.skillsCore) out.skills.hrd = v.skillsCore;
-    out.career = base.career.map(function (x) {
-      var y = {}; Object.keys(x).forEach(function (k) { y[k] = x[k]; });
-      if (x.bridgeHrm) y.bridge = x.bridgeHrm;
-      return y;
-    });
-    P = out;
-  }
   // 요약 화면: featured 에 적은 프로젝트를 먼저, 나머지는 최신 순
   function featuredFirst(list) {
     var ids = (P.featured || []).map(function (x) { return String(x).replace(/-/g, '').toLowerCase(); });
@@ -244,7 +221,6 @@
       app.innerHTML = '<article class="page">' +
         '<header class="dhead"><div class="crumb"><a href="/projects" data-link>프로젝트</a> › ' + esc(p.category) + '</div>' +
           '<span class="who">' + esc(who) + '</span><h1>' + esc(p.title) + '</h1>' + (p.summary ? '<p>' + esc(p.summary) + '</p>' : '') + '</header>' +
-        (p.hrmSummary && P.text.focusLabel ? '<section class="focus" aria-label="' + esc(P.text.focusLabel) + '"><span class="k">' + esc(P.text.focusLabel) + '</span><p>' + esc(p.hrmSummary) + '</p></section>' : '') +
         '<dl class="info">' +
           '<div><dt>기업 · 소속</dt><dd>' + esc(p.client || p.org) + '</dd></div>' +
           '<div><dt>기간</dt><dd class="num">' + esc(fmtPeriod(p.period)) + '</dd></div>' +
@@ -432,11 +408,6 @@
   });
   window.addEventListener('popstate', route);
 
-  // 시작: 이 배포의 버전(HRD / HRM)을 확인한 뒤 화면을 그립니다. 확인 실패 시 HRD
-  function start(track) { applyVariant(track); setupChrome(); route(); }
-  var started = false;
-  function once(track) { if (!started) { started = true; start(track); } }
-  setTimeout(function () { once('HRD'); }, 1500);
-  fetch('/api/site').then(function (r) { return r.ok ? r.json() : {}; })
-    .then(function (d) { once(d && d.track); }, function () { once('HRD'); });
+  setupChrome();
+  route();
 })();

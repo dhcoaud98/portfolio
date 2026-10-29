@@ -348,8 +348,3 @@ article.page{gap:var(--s-6)}
   .page{gap:28px}
 }
 
-/* ---------- HRM 사이트: 상세 화면 맨 위 'HR 관점 요약' ---------- */
-.focus{border-left:3px solid var(--accent);background:var(--soft);padding:var(--s-4) var(--s-5);border-radius:0 var(--r-box) var(--r-box) 0;display:grid;gap:var(--s-2)}
-.focus .k{font-size:var(--fs-label);font-weight:700;letter-spacing:.06em;color:var(--accent)}
-.focus p{font-size:17px;line-height:1.7;color:var(--ink);max-width:68ch}
-@media print{ .focus{break-inside:avoid;background:#F3F5F8} }

@@ -29,17 +29,6 @@ export const RULES = {
   cacheSeconds: 120,
 };
 
-// 사이트 버전 (HRD / HRM) — 같은 코드·같은 노션으로 두 사이트를 운영합니다.
-//  - Vercel 환경변수 PORTFOLIO_TRACK 으로 고릅니다. 없으면 HRD (기존 사이트 그대로)
-//  - 노션 '노출 포트폴리오' 속성에 그 버전이 체크된 프로젝트만 표시
-//  - 속성이 비어 있거나 속성 자체가 없는 DB는 양쪽 모두 표시 (showWhenEmpty)
-export const TRACKS = {
-  default: 'HRD',
-  available: ['HRD', 'HRM'],
-  prop: '노출 포트폴리오',
-  showWhenEmpty: true,
-};
-
 // 핵심 숫자 '참여 기업 AX 교육 과정' 계산 기준: '유형'에 아래 값이 모두 들어 있는 공개 프로젝트
 export const KPI_RULES = { courseRoles: ['실습코치', 'B2B'] };
 
@@ -57,5 +46,4 @@ export const PROPS = {
   client: ['고객사', '기업명', '클라이언트'],
   headcount: ['인원수', '인원', '학습자 수'],
   cover: ['배경사진', '표지', '커버'],   // 페이지 커버가 없을 때 쓸 이미지(파일) 속성
-  hrmSummary: ['HRM 요약'],   // HRM 사이트 상세 화면 맨 위에 표시 (HRD 사이트에서는 보내지 않음)
 };
