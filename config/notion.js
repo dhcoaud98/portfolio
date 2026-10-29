@@ -22,7 +22,7 @@ export const RULES = {
   // (코멘토 외 데이터베이스에도 '공개여부'를 추가하면 그 값이 우선합니다)
   showWhenFlagMissing: true,
   // 웹앱에 절대 노출하지 않을 속성 (고객사 교안 등 내부 자료 보호)
-  hiddenProps: ['파일', '배경사진', '공개여부', '노출 포트폴리오', 'HRM 요약'],
+  hiddenProps: ['파일', '배경사진', '공개여부'],
   // 본문 안의 첨부 파일·PDF 블록 숨김 (교안 등 내부 자료 보호)
   hideFileBlocks: true,
   // 노션 수정 → 웹앱 반영까지 최대 대기 시간(초)
