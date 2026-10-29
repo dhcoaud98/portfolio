@@ -127,18 +127,19 @@
   function projectTable(list, opts) {
     opts = opts || {};
     if (!list.length) return '<div class="empty">공개된 프로젝트가 없습니다.</div>';
-    return '<div class="ptable' + (opts.boxed ? ' boxed' : '') + '">' +
-      '<div class="phead" aria-hidden="true"><span>기업 · 소속</span><span>프로젝트</span><span>역할</span><span class="h-tech">기술</span><span>기간 · 상태</span></div>' +
-      list.map(function (p) {
-        var orgMain = p.client || p.org, orgSub = p.client ? p.org : p.category;
-        return '<a class="prow" href="/projects/' + p.id + '" data-link>' +
-          '<div class="p-org"><b>' + esc(orgMain) + '</b><span>' + esc(orgSub) + '</span></div>' +
-          '<div class="p-title"><b>' + esc(p.title) + '</b>' + (p.summary ? '<span>' + esc(p.summary) + '</span>' : '') + '</div>' +
-          '<div class="p-role chips"><span class="mlab">역할</span>' + chips(p.roles, '', 3) + '</div>' +
-          '<div class="p-tech chips"><span class="mlab">기술</span>' + chips(p.tech, 'o', 4) + '</div>' +
-          '<div class="p-date"><span>' + esc(fmtPeriod(p.period)) + '</span>' + statusChip(p.status) + '</div>' +
-          '</a>';
-      }).join('') + '</div>';
+    return '<div class="pgrid">' + list.map(function (p) {
+      var orgMain = p.client || p.org, orgSub = p.client ? p.org : p.category;
+      return '<a class="pcard" href="/projects/' + p.id + '" data-link>' +
+        '<div class="pc-cover"><span class="pc-ph">' + esc(orgMain) + '</span>' +
+          (p.cover ? '<img src="' + esc(p.cover) + '" alt="" loading="lazy" onerror="this.remove()">' : '') + '</div>' +
+        '<div class="pc-body">' +
+          '<div class="pc-top"><span><b>' + esc(orgMain) + '</b> · ' + esc(orgSub) + '</span>' + statusChip(p.status) + '</div>' +
+          '<h3 class="pc-title">' + esc(p.title) + '</h3>' +
+          (p.summary ? '<p class="pc-sum">' + esc(p.summary) + '</p>' : '') +
+          '<div class="chips">' + (p.roles.length ? chips(p.roles, '', 3) : '') + (p.tech.length ? chips(p.tech, 'o', 3) : '') + '</div>' +
+          '<div class="pc-date">' + esc(fmtPeriod(p.period)) + '</div>' +
+        '</div></a>';
+    }).join('') + '</div>';
   }
   function skeleton(n) {
     var s = '<div class="ptable">';
@@ -188,7 +189,7 @@
       '</div>';
     getProjects().then(function (d) {
       var el = document.getElementById('homeProjects'); if (!el) return;
-      el.innerHTML = sampleNotice(d) + projectTable(featuredFirst(d.projects).slice(0, 5), { boxed: true });
+      el.innerHTML = sampleNotice(d) + projectTable(d.projects.slice(0, 3))
       // 노션 데이터로 핵심 숫자 갱신 (auto 값: courses, headcount / 0이면 content.js 값 유지)
       document.querySelectorAll('.kpi[data-auto]').forEach(function (k) {
         var v = d.stats && d.stats[k.getAttribute('data-auto')];
