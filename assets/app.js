@@ -100,6 +100,12 @@
   if (desc) desc.setAttribute('content', P.oneLiner);
   }
 
+  // 표지 이미지: 사진은 카드에 꽉 채우고, 로고처럼 가로·세로 비율이 많이 다른 이미지는 잘리지 않게 통째로 보여 줍니다
+  window.fitCover = function (img) {
+    var r = img.naturalWidth / img.naturalHeight;
+    if (r > 2.1 || r < 1.2) img.classList.add('fit');
+  };
+
   /* ---------- shared blocks ---------- */
   function projectTable(list, opts) {
     opts = opts || {};
@@ -108,7 +114,7 @@
       var orgMain = p.client || p.org, orgSub = p.client ? p.org : p.category;
       return '<a class="pcard" href="/projects/' + p.id + '" data-link>' +
         '<div class="pc-cover"><span class="pc-ph">' + esc(orgMain) + '</span>' +
-          (p.cover ? '<img src="' + esc(p.cover) + '" alt="" loading="lazy" onerror="this.remove()">' : '') + '</div>' +
+          (p.cover ? '<img src="' + esc(p.cover) + '" alt="" loading="lazy" onload="fitCover(this)" onerror="this.remove()">' : '') + '</div>' +
         '<div class="pc-body">' +
           '<div class="pc-top"><span><b>' + esc(orgMain) + '</b> · ' + esc(orgSub) + '</span>' + statusChip(p.status) + '</div>' +
           '<h3 class="pc-title">' + esc(p.title) + '</h3>' +

@@ -140,6 +140,7 @@ article.page{gap:var(--s-6)}
 .pcard:hover .pc-title{text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px}
 .pc-cover{position:relative;aspect-ratio:16/9;background:var(--soft);border-bottom:1px solid var(--line);overflow:hidden}
 .pc-cover img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background:var(--surface)}
+.pc-cover img.fit{object-fit:contain;padding:var(--s-5);background:#fff}
 .pc-ph{position:absolute;inset:0;display:grid;place-items:center;padding:var(--s-4);text-align:center;font-family:var(--font-serif);font-weight:700;font-size:24px;letter-spacing:-.02em;color:var(--accent)}
 .pc-body{flex:1;display:flex;flex-direction:column;gap:var(--s-2);padding:var(--s-4) var(--s-4) var(--s-5)}
 .pc-top{display:flex;justify-content:space-between;align-items:center;gap:var(--s-2);font-size:12.5px;color:var(--sub)}
