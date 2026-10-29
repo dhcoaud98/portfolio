@@ -160,7 +160,7 @@
 
   /* ---------- pages ---------- */
   function pageHome() {
-    document.title = P.name + ' | ' + P.text.siteTitle;
+    document.title = P.name + ' | HR · 교육 운영 포트폴리오';
     app.innerHTML =
       '<div class="page">' +
       '<section class="hero">' +
