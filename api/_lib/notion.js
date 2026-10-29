@@ -100,6 +100,17 @@ function stats(projects) {
   };
 }
 
+// 표지 이미지: 노션 페이지 커버 → 없으면 '배경사진' 등 파일 속성의 첫 이미지
+function coverUrl(page) {
+  const f = (x) => (x?.type === 'external' ? x.external?.url : x?.file?.url) || null;
+  if (page.cover) return f(page.cover);
+  for (const n of PROPS.cover || []) {
+    const p = page.properties[n];
+    if (p?.type === 'files' && p.files.length) return f(p.files[0]);
+  }
+  return null;
+}
+
 const toList = (v) =>
   Array.isArray(v) ? v : typeof v === 'string' && v.trim() ? v.split(/[,·/]/).map((s) => s.trim()).filter(Boolean) : [];
 
@@ -147,6 +158,7 @@ function toProject(page, db, track = currentTrack()) {
     place: pick(page, PROPS.place) || null,
     summary: pick(page, PROPS.summary) || '',
     headcount: toCount(pick(page, PROPS.headcount)),
+    cover: coverUrl(page),
     hrmSummary: track === 'HRM' ? pick(page, PROPS.hrmSummary) || null : null,
     links,
     updated: page.last_edited_time,
